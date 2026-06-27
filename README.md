@@ -1,135 +1,211 @@
-# clan_treasury
+# Clan Treasury Protocol
 
-## Project Description
+Production-ready Stellar Soroban MVP for transparent gaming clan treasury deposits, spend requests, and audit history.
 
-**clan_treasury** is a Stellar Testnet dApp for sending transparent clan treasury deposits through a Freighter wallet.
+## Overview
 
-Gaming clans often manage shared funds through private chats, spreadsheets, or a single leader's personal account. This makes it hard for members, sponsors, or tournament organizers to verify how much has been contributed. This Level 1 version of **clan_treasury** demonstrates the first on-chain step: a player connects a Freighter wallet, checks their XLM balance, chooses a clan treasury, and sends a testnet XLM deposit to a treasury/admin address.
+Clan Treasury Protocol helps gaming clans and esports clubs manage shared funds with transparent on-chain records.
 
-This project is built for Stellar Level 1 and focuses on the core fundamentals: wallet connection, wallet disconnection, balance display, transaction signing, transaction status, and transaction hash visibility.
+Members can record treasury deposits. Treasury admins can create spend requests, execute approved spending, cancel pending requests, and track clan treasury stats.
 
-## Project Vision
+The project upgrades a basic Stellar Testnet treasury deposit app into a Soroban-powered clan treasury workflow.
 
-The long-term vision of **clan_treasury** is to help gaming clans operate with transparent, auditable financial activity without the complexity of full DAO governance.
+## Problem
 
-In a future Soroban version, each clan will be identified by a short symbol such as `DRGN`, `NVLT`, or `PHNX`. A single admin can manage withdrawals, while any player, member, or sponsor can deposit into the clan pool. The smart contract can track current balance and lifetime deposit totals so the community can verify how the treasury grows over time.
+Gaming clans often manage shared funds through private chats, spreadsheets, or a single leader's personal wallet.
 
-For Level 1, this project proves the foundation: a user can connect a Stellar wallet, view their XLM balance, and send a real transaction on Stellar Testnet.
+This creates several problems:
 
-## Built With
+- members cannot easily verify total contributions
+- sponsors cannot clearly track fund usage
+- spending decisions are hard to audit
+- tournament organizers cannot verify treasury activity
+- clan leaders must manage manual records
 
-* Stellar Testnet
-* Freighter Wallet
-* Stellar SDK
-* Freighter API
-* React
-* TypeScript
-* Vite
+## Solution
 
-## Level 1 Requirements Covered
+Clan Treasury Protocol records treasury actions through a Soroban smart contract on Stellar Testnet.
 
-| Requirement                          | Status    |
-| ------------------------------------ | --------- |
-| Set up Freighter wallet              | Completed |
-| Use Stellar Testnet                  | Completed |
-| Wallet connect functionality         | Completed |
-| Wallet disconnect functionality      | Completed |
-| Fetch connected wallet XLM balance   | Completed |
-| Display balance clearly in UI        | Completed |
-| Send XLM transaction on Testnet      | Completed |
-| Show success or failure state        | Completed |
-| Show transaction hash / confirmation | Completed |
-| Public GitHub repository             | Completed |
+The MVP supports:
 
-## Transaction Proof
+- protocol initialization
+- clan treasury creation
+- treasury admin setup
+- member registration
+- deposit recording
+- spend request creation
+- spend execution
+- spend cancellation
+- clan stats
+- member stats
+- audit history
+- frontend Stellar SDK integration
+- backend product validation API
 
-* **Network:** Stellar Testnet
-* **Transaction Hash:** `8662f13f4ab805aa93a2c2af49c7d88895326dbb5440b423dc0e4d9612bf827f`
-* **Stellar Expert Link:** https://stellar.expert/explorer/testnet/tx/8662f13f4ab805aa93a2c2af49c7d88895326dbb5440b423dc0e4d9612bf827f
+## Smart Contract
 
-## Screenshots
+Location:
 
-### Wallet Connected + Balance Displayed
+    contracts/clan_treasury
 
-![Wallet Balance](./screenshots/wallet-balance.png)
+Main write functions:
 
-### Successful Testnet Transaction
+- initialize
+- create_clan
+- set_clan_active
+- add_member
+- record_deposit
+- request_spend
+- execute_spend
+- cancel_spend
 
-![Transaction Success](./screenshots/transaction-success.png)
+Main read functions:
 
-## How to Run Locally
+- get_config
+- get_clan
+- get_member
+- get_deposit
+- get_spend
+- get_clan_stats
+- get_member_stats
+- get_audit_count
+- get_audit_record
 
-### 1. Clone the repository
+## Frontend
 
-```bash
-git clone https://github.com/nanzimin499/clan_treasury.git
-cd clan_treasury
-```
+Location:
 
-### 2. Install dependencies
+    frontend
 
-```bash
-npm install
-```
+The frontend is a React and Vite dashboard with Freighter wallet connection, contract runtime display, Stellar SDK integration, frontend-to-contract function mapping, clan treasury metrics, deposit records, spend request records, wallet interaction proof, analytics summary, and mobile responsive UI.
 
-### 3. Start the development server
+Important integration files:
 
-```bash
-npm run dev
-```
+- frontend/src/contractConfig.ts
+- frontend/src/services/stellarContractClient.ts
+- frontend/src/services/contract.ts
+- frontend/src/services/clanTreasury.test.ts
 
-For this project, using a unique local port is recommended:
+## Stellar SDK Integration
 
-```bash
-npm run dev -- --host 127.0.0.1 --port 5176
-```
+The frontend uses @stellar/stellar-sdk and prepares contract operations with:
 
-Then open:
+    new Stellar.Contract(CONTRACT_CONFIG.contractId)
+    contract.call(functionName, ...args)
 
-```bash
-http://127.0.0.1:5176/
-```
+Every frontend contract action is mapped to a matching Soroban contract function.
 
-## How to Use
+## Backend
 
-1. Install the Freighter wallet extension.
-2. Switch Freighter to Stellar Testnet.
-3. Fund your Testnet wallet.
-4. Open the app locally.
-5. Click **Connect Freighter**.
-6. Confirm the connection in Freighter.
-7. View your connected wallet address and XLM balance.
-8. Choose a clan treasury such as `DRGN`, `NVLT`, or `PHNX`.
-9. Enter a funded Stellar Testnet treasury/admin address.
-10. Enter the deposit amount in XLM.
-11. Click **Deposit to Clan Treasury**.
-12. Approve the transaction in Freighter.
-13. View the success message, transaction hash, and Stellar Expert link.
+Location:
 
-## Project Structure
+    server
 
-```text
-clan_treasury
-├── screenshots
-│   ├── wallet-balance.png
-│   └── transaction-success.png
-├── src
-│   ├── App.css
-│   ├── App.tsx
-│   └── main.tsx
-├── .gitignore
-├── README.md
-├── index.html
-├── package.json
-├── package-lock.json
-├── tsconfig.json
-├── tsconfig.app.json
-├── tsconfig.node.json
-└── vite.config.ts
-```
+Backend endpoints:
 
-## Notes
+- GET /health
+- GET /api/config
+- GET /api/functions
+- GET /api/clan
+- GET /api/stats
+- GET /api/deposits
+- GET /api/spends
+- GET /api/interactions
+- POST /api/interactions
+- GET /api/feedback
+- POST /api/feedback
+- GET /api/analytics
+- GET /api/product-readiness
 
-This is the Level 1 version of **clan_treasury**.
+## Repository Structure
 
-The current app does not use a Soroban smart contract yet. The Soroban contract version will be added in a future Level 2 version, where clan symbols, admin control, deposits, balances, lifetime totals, and withdrawals can be enforced directly on-chain.
+    clan_treasury
+    ├── contracts
+    │   └── clan_treasury
+    ├── frontend
+    ├── server
+    ├── docs
+    ├── scripts
+    ├── .github
+    │   └── workflows
+    ├── vercel.json
+    ├── railway.toml
+    ├── Procfile
+    ├── Cargo.toml
+    ├── Cargo.lock
+    └── README.md
+
+## Local Requirements
+
+- Node.js 24.x
+- npm 11.x
+- Rust 1.96.x
+- Cargo 1.96.x
+- Stellar CLI 27.x
+- Rust target wasm32v1-none
+
+Install Rust target if needed:
+
+    rustup target add wasm32v1-none
+
+## Run Smart Contract
+
+    cargo fmt
+    cargo test --workspace
+    cargo build --workspace --target wasm32v1-none --release
+    stellar contract build
+
+## Run Frontend
+
+    cd frontend
+    npm ci --audit=false --fund=false
+    npm run dev
+
+Build and test frontend:
+
+    npm run type-check
+    npm run build
+    npm test
+
+## Run Backend
+
+    cd server
+    npm ci --audit=false --fund=false
+    npm run dev
+
+Build and test backend:
+
+    npm run type-check
+    npm run build
+    npm test
+
+## Full Local Verification
+
+From the project root:
+
+    .\scripts\verify-level4.ps1
+
+## Deployment Configuration
+
+Frontend:
+
+    vercel.json
+
+Backend:
+
+    railway.toml
+    Procfile
+
+Smart contract deployment helper:
+
+    scripts/deploy-and-save.ps1
+
+## Documentation
+
+- docs/ARCHITECTURE.md
+- docs/FRONTEND_CONTRACT_INTEGRATION.md
+- docs/QUALITY_AND_DEPLOYMENT.md
+
+## Current Status
+
+This repository contains a complete Level 4-style structure with smart contract, frontend, backend, documentation, CI workflow, and deployment configuration.
